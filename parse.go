@@ -11,11 +11,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/suyashkumar/dicom/dicomio"
-	"github.com/suyashkumar/dicom/dicomlog"
-	"github.com/suyashkumar/dicom/dicomtag"
-	"github.com/suyashkumar/dicom/element"
-	"github.com/suyashkumar/dicom/frame"
+	"github.com/fshilver/dicom/dicomio"
+	"github.com/fshilver/dicom/dicomlog"
+	"github.com/fshilver/dicom/dicomtag"
+	"github.com/fshilver/dicom/element"
+	"github.com/fshilver/dicom/frame"
 )
 
 // Parser represents an entity that can read and parse DICOMs

@@ -4,10 +4,10 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/suyashkumar/dicom"
-	"github.com/suyashkumar/dicom/dicomtag"
-	"github.com/suyashkumar/dicom/element"
-	"github.com/suyashkumar/dicom/query"
+	"github.com/fshilver/dicom"
+	"github.com/fshilver/dicom/dicomtag"
+	"github.com/fshilver/dicom/element"
+	"github.com/fshilver/dicom/query"
 )
 
 func TestParse0(t *testing.T) {

@@ -6,8 +6,8 @@ import (
 	"strconv"
 
 	"github.com/gobwas/glob"
-	"github.com/suyashkumar/dicom/dicomtag"
-	"github.com/suyashkumar/dicom/element"
+	"github.com/fshilver/dicom/dicomtag"
+	"github.com/fshilver/dicom/element"
 )
 
 func querySequence(elem *element.Element, f *element.Element) (match bool, err error) {

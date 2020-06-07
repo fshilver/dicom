@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/suyashkumar/dicom/dicomtag"
-	"github.com/suyashkumar/dicom/element"
+	"github.com/fshilver/dicom/dicomtag"
+	"github.com/fshilver/dicom/element"
 )
 
 // DirectoryRecord contains info about one DICOM file mentioned in DICOMDIR.

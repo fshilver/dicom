@@ -7,12 +7,12 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/suyashkumar/dicom"
-	"github.com/suyashkumar/dicom/dicomio"
-	"github.com/suyashkumar/dicom/dicomtag"
-	"github.com/suyashkumar/dicom/dicomuid"
-	"github.com/suyashkumar/dicom/element"
-	"github.com/suyashkumar/dicom/write"
+	"github.com/fshilver/dicom"
+	"github.com/fshilver/dicom/dicomio"
+	"github.com/fshilver/dicom/dicomtag"
+	"github.com/fshilver/dicom/dicomuid"
+	"github.com/fshilver/dicom/element"
+	"github.com/fshilver/dicom/write"
 )
 
 func testWriteDataElement(t *testing.T, bo binary.ByteOrder, implicit dicomio.IsImplicitVR) {
