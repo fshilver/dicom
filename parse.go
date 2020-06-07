@@ -24,6 +24,8 @@ type Parser interface {
 	Parse(options ParseOptions) (*element.DataSet, error)
 	// ParseNext reads and parses the next element
 	ParseNext(options ParseOptions) *element.Element
+	// ParseWithCharacterSet DICOM data with specific character set
+	ParseWithCharacterSet(options ParseOptions, encodingNames []string) (*element.DataSet, error)
 	// DecoderError fetches an error (if exists) from the dicomio.Decoder
 	DecoderError() error // This should go away as we continue refactors
 	// Finish should be called after manually parsing elements using ParseNext (instead of Parse)
@@ -423,6 +425,55 @@ func (p *parser) ParseNext(options ParseOptions) *element.Element {
 	}
 	elem.Value = data
 	return elem
+}
+
+func (p *parser) ParseWithCharacterSet(options ParseOptions, encodingNames []string) (*element.DataSet, error) {
+	// Change the transfer syntax for the rest of the file.
+	endian, implicit, err := p.parsedElements.TransferSyntax()
+	if err != nil {
+		return nil, err
+	}
+	p.decoder.PushTransferSyntax(endian, implicit)
+	defer p.decoder.PopTransferSyntax()
+
+	// if reading from file, close the file after done parsing
+	if p.file != nil {
+		defer p.file.Close()
+	}
+
+	// Read the list of elements.
+	for p.decoder.Len() > 0 {
+		startLen := p.decoder.Len()
+		elem := p.ParseNext(options)
+		if p.decoder.Len() >= startLen { // Avoid silent infinite looping.
+			panic(fmt.Sprintf("ReadElement failed to consume data: %d %d: %v", startLen, p.decoder.Len(), p.decoder.Error()))
+		}
+		if elem == element.EndOfData {
+			// element is a pixel data and was dropped by options
+			break
+		}
+		if elem == nil {
+			// Parse error.
+			continue
+		}
+		if elem.Tag == dicomtag.SpecificCharacterSet {
+			// TODO(saito) SpecificCharacterSet may appear in a
+			// middle of a SQ or NA.  In such case, the charset seem
+			// to be scoped inside the SQ or NA. So we need to make
+			// the charset a stack.
+			cs, err := dicomio.ParseSpecificCharacterSet(encodingNames)
+			if err != nil {
+				p.decoder.SetError(err)
+			} else {
+				p.decoder.SetCodingSystem(cs)
+			}
+		}
+		if options.ReturnTags == nil || (options.ReturnTags != nil && tagInList(elem.Tag, options.ReturnTags)) {
+			p.parsedElements.Elements = append(p.parsedElements.Elements, elem)
+		}
+
+	}
+	return p.parsedElements, p.decoder.Error()
 }
 
 func (p *parser) DecoderError() error {
